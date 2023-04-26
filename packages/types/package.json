@@ -1,8 +1,8 @@
 {
-  "name": "@plasticine-monitor-sdk/core",
+  "name": "@plasticine-monitor-sdk/types",
   "version": "0.0.0",
   "author": "Plasticine-Yang",
-  "description": "core of @plasticine-monitor-sdk",
+  "description": "types of @plasticine-monitor-sdk",
   "type": "module",
   "license": "MIT",
   "main": "./dist/index.cjs",
@@ -22,8 +22,5 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup --dts"
-  },
-  "devDependencies": {
-    "@plasticine-monitor-sdk/types": "workspace:*"
   }
 }

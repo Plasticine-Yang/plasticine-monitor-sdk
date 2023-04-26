@@ -1,8 +1,8 @@
 {
-  "name": "@plasticine-monitor-sdk/core",
+  "name": "@plasticine-monitor-sdk/browser",
   "version": "0.0.0",
   "author": "Plasticine-Yang",
-  "description": "core of @plasticine-monitor-sdk",
+  "description": "sdk runtime in browser",
   "type": "module",
   "license": "MIT",
   "main": "./dist/index.cjs",
