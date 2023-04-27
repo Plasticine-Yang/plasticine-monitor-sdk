@@ -1,12 +1,9 @@
-import type { Kernel } from './kernel'
-import type { DataForReport } from './data-for-report'
-
-export interface Plugin<K extends Kernel = Kernel> {
+export interface Plugin<Kernel = unknown, Event = unknown> {
   name: string
 
-  init(kernel: K): void
+  init(kernel: Kernel): void
 
-  beforeReport?(data: DataForReport): void
+  beforeReport?(event: Event): void
 
   beforeDestroy?(): void
 }

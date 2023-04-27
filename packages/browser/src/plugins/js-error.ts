@@ -4,11 +4,11 @@ export function pluginJSError(): Plugin<BrowserKernel> {
   let browserKernel: BrowserKernel | null = null
 
   const handleError = (ev: ErrorEvent) => {
-    browserKernel?.reportData({ name: 'error', ev })
+    browserKernel?.captureError(ev)
   }
 
   const handleUnhandledRejection = (ev: PromiseRejectionEvent) => {
-    browserKernel?.reportData({ name: 'promise error', ev })
+    browserKernel?.captureError(ev)
   }
 
   return {
