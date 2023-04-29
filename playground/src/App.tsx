@@ -1,4 +1,7 @@
 import { useState } from 'react'
+
+import { getBrowserKernel } from '@plasticine-monitor-sdk/browser'
+
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -25,6 +28,13 @@ function App() {
           }}
         >
           emit error
+        </button>
+        <button
+          onClick={() => {
+            getBrowserKernel()?.captureError(new Error('手动调用 captureError'))
+          }}
+        >
+          手动调用 captureError
         </button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
