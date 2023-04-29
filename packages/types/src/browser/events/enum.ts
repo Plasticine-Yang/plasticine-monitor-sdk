@@ -12,6 +12,10 @@ export enum EventTypeEnum {
 
 /** 性能指标种类 */
 export enum PerformanceMetricsEnum {
+  /** First Paint */
   FP = 'FP',
+  /** First Contentful Paint */
   FCP = 'FCP',
+  /** Largest Contentful Paint */
+  LCP = 'LCP',
 }

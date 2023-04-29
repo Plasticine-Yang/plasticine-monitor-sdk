@@ -7,36 +7,77 @@ import {
   PerformancePayload,
 } from '@plasticine-monitor-sdk/types'
 
-/** 获取页面的 FP(first-paint) 性能指标 */
-function getFP(): PerformancePayload {
-  return {
-    name: PerformanceMetricsEnum.FP,
-    value: performance.getEntriesByName('first-paint').at(0)?.startTime ?? -1,
-  }
-}
+class PerformanceMetricsManager {
+  private performanceObserver: PerformanceObserver
+  private performancePayloadList: PerformancePayload[] = []
 
-/** 获取页面的 FCP(first-contentful-paint) 性能指标 */
-function getFCP(): PerformancePayload {
-  return {
-    name: PerformanceMetricsEnum.FCP,
-    value: performance.getEntriesByName('first-contentful-paint').at(0)?.startTime ?? -1,
+  constructor() {
+    this.performanceObserver = new PerformanceObserver(this.performanceObserverCallback)
+    this.observe()
   }
-}
 
-/** 获取待上报的性能指标事件 */
-function getPerformanceEvent(): PerformanceEvent {
-  return {
-    eventType: EventTypeEnum.Performance,
-    payload: [getFP(), getFCP()],
+  private performanceObserverCallback: PerformanceObserverCallback = (entryList) => {
+    for (const entry of entryList.getEntries()) {
+      console.log(entry)
+      // FP & FCP
+      if (entry.entryType === 'paint') {
+        switch (entry.name) {
+          case 'first-paint':
+            this.performancePayloadList.push({
+              name: PerformanceMetricsEnum.FP,
+              value: entry.startTime,
+            })
+            break
+
+          case 'first-contentful-paint':
+            this.performancePayloadList.push({
+              name: PerformanceMetricsEnum.FCP,
+              value: entry.startTime,
+            })
+            break
+
+          default:
+            break
+        }
+      }
+
+      // LCP
+      if (entry.entryType === 'largest-contentful-paint') {
+        this.performancePayloadList.push({
+          name: PerformanceMetricsEnum.LCP,
+          value: entry.startTime,
+        })
+      }
+    }
+  }
+
+  private observe() {
+    // FP & FCP
+    this.performanceObserver.observe({ type: 'paint', buffered: true })
+
+    // LCP
+    this.performanceObserver.observe({ type: 'largest-contentful-paint', buffered: true })
+  }
+
+  public getPerformanceEvent(): PerformanceEvent {
+    return {
+      eventType: EventTypeEnum.Performance,
+      payload: this.performancePayloadList,
+    }
+  }
+
+  public destroy() {
+    this.performanceObserver.disconnect()
   }
 }
 
 export function pluginPerformance(): BrowserPlugin {
   let browserKernel: BrowserKernel
+  let performanceMetricsManager: PerformanceMetricsManager
 
   const handleLoad = () => {
-    const performanceEvent = getPerformanceEvent()
-    browserKernel.reportEvent(performanceEvent)
+    performanceMetricsManager = new PerformanceMetricsManager()
+    browserKernel.reportEvent(performanceMetricsManager.getPerformanceEvent())
   }
 
   return {
@@ -49,6 +90,9 @@ export function pluginPerformance(): BrowserPlugin {
 
     beforeDestroy() {
       window.removeEventListener('load', handleLoad)
+
+      // 取消对性能指标数据的监听
+      performanceMetricsManager.destroy()
     },
   }
 }
