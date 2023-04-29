@@ -1,6 +1,6 @@
-import type { BrowserKernel, Plugin } from '@plasticine-monitor-sdk/types'
+import type { BrowserKernel, BrowserPlugin } from '@plasticine-monitor-sdk/types'
 
-export function pluginJSError(): Plugin<BrowserKernel> {
+export function pluginJSError(): BrowserPlugin {
   let browserKernel: BrowserKernel | null = null
 
   const handleError = (ev: ErrorEvent) => {

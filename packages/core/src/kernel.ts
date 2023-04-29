@@ -30,7 +30,7 @@ export abstract class Kernel {
   }
 
   /** 上报事件 */
-  protected reportEvent<E>(event: E): void {
+  public reportEvent<E>(event: E): void {
     this.logger.info('准备上报事件：', event)
 
     const { plugins, url, sender } = this.kernelOptions

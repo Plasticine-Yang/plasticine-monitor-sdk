@@ -1,6 +1,6 @@
 import type { Plugin } from '@plasticine-monitor-sdk/types'
 
-import { pluginDemo } from './demo'
 import { pluginJSError } from './js-error'
+import { pluginPerformance } from './performance'
 
-export const defaultPlugins: Plugin[] = [pluginJSError(), pluginDemo()]
+export const defaultPlugins: Plugin[] = [pluginJSError(), pluginPerformance()]

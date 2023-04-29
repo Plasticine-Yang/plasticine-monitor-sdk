@@ -1,5 +1,5 @@
-import { BaseEvent } from './base-event'
-import { EventTypeEnum } from './enum'
+import type { BaseEvent } from './base-event'
+import type { EventTypeEnum } from './enum'
 
 export interface JSError {
   /** 错误名称 */
