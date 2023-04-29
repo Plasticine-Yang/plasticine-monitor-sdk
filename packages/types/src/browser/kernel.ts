@@ -11,4 +11,7 @@ export interface BrowserKernel {
   captureError(error: string | Error | ErrorEvent | PromiseRejectionEvent): void
 
   destroy(): void
+
+  /** 手动调用指明 TTI 时刻 - 需要启用了 performance 插件才会动态挂载该方法 */
+  recordTTI?: () => void
 }

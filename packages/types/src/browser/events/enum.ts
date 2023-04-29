@@ -20,4 +20,6 @@ export enum PerformanceMetricsEnum {
   LCP = 'LCP',
   /** First Input Delay */
   FID = 'FID',
+  /** Time To Interactive */
+  TTI = 'TTI',
 }

@@ -36,6 +36,13 @@ function App() {
         >
           手动调用 captureError
         </button>
+        <button
+          onClick={() => {
+            getBrowserKernel()?.recordTTI?.()
+          }}
+        >
+          手动标记为 TTI
+        </button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
