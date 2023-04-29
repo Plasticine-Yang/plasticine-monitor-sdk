@@ -10,7 +10,12 @@ export const init: FnInitBrowserSDK = (browserSDKOptions) => {
 
   const browserKernel = new BrowserKernelImpl(browserKernelOptions)
 
-  return browserKernel
+  window.__PLASTICINE_MONITOR__ = browserKernel
+}
+
+/** 需要在调用完 init 之后才能够获取到内核实例 */
+export function getBrowserKernel() {
+  return window.__PLASTICINE_MONITOR__
 }
 
 function resolveKernelOptions(browserSDKOptions: BrowserSDKOptions): BrowserKernelOptions {

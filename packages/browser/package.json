@@ -5,6 +5,10 @@
   "description": "sdk runtime in browser",
   "type": "module",
   "license": "MIT",
+  "files": [
+    "dist",
+    "globals.d.ts"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -13,6 +17,9 @@
       "require": "./dist/index.cjs",
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./globals": {
+      "types": "./globals.d.ts"
     }
   },
   "keywords": [
