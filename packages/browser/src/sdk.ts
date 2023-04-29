@@ -1,6 +1,7 @@
 import type { BrowserKernelOptions, BrowserSDKOptions, FnInitBrowserSDK } from '@plasticine-monitor-sdk/types'
 
 import { BrowserKernelImpl } from './kernel'
+import { createBrowserLogger } from './logger'
 import { defaultPlugins } from './plugins'
 import { fetchSender } from './sender'
 
@@ -13,7 +14,7 @@ export const init: FnInitBrowserSDK = (browserSDKOptions) => {
 }
 
 function resolveKernelOptions(browserSDKOptions: BrowserSDKOptions): BrowserKernelOptions {
-  const { url, projectId, env, release, plugins, sender } = browserSDKOptions
+  const { url, projectId, env, release, plugins, sender, enableLogger } = browserSDKOptions
 
   return {
     url,
@@ -22,5 +23,7 @@ function resolveKernelOptions(browserSDKOptions: BrowserSDKOptions): BrowserKern
     release: release ?? 'unknown',
     plugins: plugins ?? defaultPlugins,
     sender: sender ?? fetchSender,
+    enableLogger: enableLogger ?? false,
+    createLogger: createBrowserLogger,
   }
 }

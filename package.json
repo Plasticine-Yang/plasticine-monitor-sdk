@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm --filter './packages/**' --parallel dev",
+    "dev:dts": "pnpm --filter './packages/**' --parallel dev --dts",
     "build": "pnpm --filter './packages/**' --parallel build",
     "test": "vitest",
     "test:u": "vitest -u",
