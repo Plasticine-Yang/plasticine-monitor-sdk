@@ -8,4 +8,4 @@ export interface PerformancePayload {
   value: number
 }
 
-export type PerformanceEvent = BaseEvent<EventTypeEnum.Performance, PerformancePayload[]>
+export type PerformanceEvent = BaseEvent<EventTypeEnum.Performance, PerformancePayload>

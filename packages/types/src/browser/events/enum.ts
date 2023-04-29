@@ -18,4 +18,6 @@ export enum PerformanceMetricsEnum {
   FCP = 'FCP',
   /** Largest Contentful Paint */
   LCP = 'LCP',
+  /** First Input Delay */
+  FID = 'FID',
 }
