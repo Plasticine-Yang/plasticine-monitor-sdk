@@ -1,15 +1,16 @@
-import type { KernelOptions, Logger } from '@plasticine-monitor-sdk/types'
+import type { Kernel, KernelOptions, Logger } from '@plasticine-monitor-sdk/types'
 
-export abstract class Kernel {
+export abstract class KernelImpl implements Kernel {
   private kernelOptions: KernelOptions
 
   public logger: Logger
 
   constructor(kernelOptions: KernelOptions) {
-    const { createLogger, enableLogger } = kernelOptions
+    const { enableLogger, createLogger } = kernelOptions
 
     this.kernelOptions = kernelOptions
     this.logger = createLogger({ enableLogger })
+
     this.init()
   }
 
@@ -30,7 +31,7 @@ export abstract class Kernel {
   }
 
   /** 上报事件 */
-  public reportEvent<E>(event: E): void {
+  public async reportEvent(event: any): Promise<void> {
     this.logger.info('准备上报事件：', event)
 
     const { plugins, url, sender } = this.kernelOptions
@@ -41,7 +42,7 @@ export abstract class Kernel {
     }
 
     this.logger.info('上报事件', event)
-    sender.send(url, event)
+    await sender.send(url, event)
   }
 
   /** 销毁实例 */

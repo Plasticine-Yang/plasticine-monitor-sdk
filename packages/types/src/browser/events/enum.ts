@@ -2,12 +2,10 @@
 export enum EventTypeEnum {
   /** JS 运行时错误 */
   JSError = 'js-error',
-  /** 网络请求 */
-  NetworkRequest = 'network-request',
-  /** PV */
-  PageView = 'page-view',
   /** 性能指标 */
   Performance = 'performance',
+  /** 用户行为 */
+  UserBehavior = 'user-behavior',
 }
 
 /** 性能指标种类 */
@@ -22,4 +20,16 @@ export enum PerformanceMetricsEnum {
   FID = 'FID',
   /** Time To Interactive */
   TTI = 'TTI',
+}
+
+/** 用户行为指标种类 */
+export enum UserBehaviorMetricsEnum {
+  /** PV */
+  PageView = 'page-view',
+  /** 路由变更 */
+  RouteChange = 'route-change',
+  /** 点击行为 */
+  Click = 'click',
+  /** 网络请求 */
+  NetworkRequest = 'network-request',
 }
