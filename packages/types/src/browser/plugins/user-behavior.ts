@@ -2,7 +2,7 @@ import type { DeepRequired } from '../../utils'
 
 export interface PluginUserBehaviorOptions {
   /** 超过最大长度后进行上报 */
-  maxLengthToReport: number
+  maxLengthToReport?: number
 
   /**
    * 是否要记录 XMLHttpRequest 请求行为

@@ -139,6 +139,71 @@ function proxyFetch(userBehaviorQueue: UserBehaviorQueue) {
 
   if (supportFetch()) {
     originalFetch = window.fetch
+
+    // 将原始的 XMLHttpRequest 挂载到 SDK 的全局对象中，避免 SDK 自身的数据上报被监控
+    if (!window.__PLASTICINE_MONITOR__?.fetch || typeof window.__PLASTICINE_MONITOR__.fetch !== 'function') {
+      window.__PLASTICINE_MONITOR__!.fetch = originalFetch
+    }
+
+    // 改写 XMLHttpRequest 记录数据到用户行为队列中
+    window.fetch = function proxyFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+      const startTime = new Date().getTime()
+      const networkMetrics: DeepPartial<NetworkMetrics> = {
+        requestType: 'Fetch',
+        request: {
+          headers: {},
+        },
+        response: {},
+        duration: -1,
+      }
+      const url = typeof input === 'string' ? input : (input as Request).url
+      let headers = init?.headers as Record<string, string> | undefined
+
+      if (Array.isArray(init?.headers)) {
+        headers = {}
+        for (const [key, value] of init!.headers! as [string, string][]) {
+          headers[key] = value
+        }
+      }
+
+      networkMetrics.request!.timestamp = startTime
+      networkMetrics.request!.url = url
+      networkMetrics.request!.method = init?.method ?? 'GET'
+      networkMetrics.request!.headers = headers
+      networkMetrics.request!.body = init?.body?.toString()
+
+      return originalFetch
+        .call(window, input, init)
+        .then(async (response) => {
+          // clone 出一个新的 response,再用其做.text(),避免 body stream already read 问题
+          const clonedResponse = response.clone()
+
+          networkMetrics.response!.status = clonedResponse.status
+
+          const headers: Record<string, string> = {}
+          clonedResponse.headers.forEach((value, key) => {
+            headers[key] = value
+          })
+
+          networkMetrics.response!.headers = headers
+          networkMetrics.response!.body = await clonedResponse.text()
+
+          return response
+        })
+        .catch((reason) => {
+          networkMetrics.response!.status = -1
+
+          return reason
+        })
+        .finally(() => {
+          const endTime = new Date().getTime()
+
+          networkMetrics.response!.timestamp = endTime
+          networkMetrics.duration = endTime - startTime
+
+          userBehaviorQueue.add({ name: UserBehaviorMetricsEnum.Network, value: networkMetrics as NetworkMetrics })
+        })
+    }
   }
 
   return function unProxyFetch() {

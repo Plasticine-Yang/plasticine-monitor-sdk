@@ -3,15 +3,15 @@ export type RequestType = 'XHR' | 'Fetch'
 export interface NetworkRequest {
   method: string
   url: string
-  headers?: { [key: string]: string }
-  body?: string
   timestamp: number
+  headers?: Record<string, string>
+  body?: string
 }
 
 export interface NetworkResponse {
   status: number
   timestamp: number
-  headers?: { [key: string]: string }
+  headers?: Record<string, string>
   body?: string
 }
 
