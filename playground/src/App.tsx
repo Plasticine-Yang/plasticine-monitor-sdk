@@ -54,6 +54,7 @@ function App() {
             xhr.addEventListener('loadend', () => {})
 
             xhr.open('GET', '/api/todos/1', true)
+            xhr.setRequestHeader('xx-plasticine', 'xhr')
             xhr.send()
           }}
         >
@@ -64,6 +65,7 @@ function App() {
           onClick={() => {
             fetch('/api/todos/1', {
               method: 'GET',
+              headers: [['xx-plasticine', 'fetch']],
             })
           }}
         >
