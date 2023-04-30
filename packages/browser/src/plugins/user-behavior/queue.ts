@@ -2,7 +2,7 @@ import type { UserBehaviorPayload, UserBehaviorQueue } from '@plasticine-monitor
 
 type OnReport = (userBehaviorPayloads: UserBehaviorPayload[]) => void
 
-export class UserBehaviorQueueImpl implements UserBehaviorQueue<UserBehaviorPayload> {
+export class UserBehaviorQueueImpl implements UserBehaviorQueue {
   private onReport: OnReport
   private queue: UserBehaviorPayload[]
   private maxLength: number

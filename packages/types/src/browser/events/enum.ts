@@ -26,6 +26,8 @@ export enum PerformanceMetricsEnum {
 export enum UserBehaviorMetricsEnum {
   /** PV */
   PageView = 'page-view',
+  /** JS 运行时错误 */
+  JSError = 'js-error',
   /** 路由变更 */
   RouteChange = 'route-change',
   /** 点击行为 */

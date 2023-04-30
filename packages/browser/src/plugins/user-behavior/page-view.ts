@@ -1,6 +1,6 @@
-import { UserBehaviorMetricsEnum, UserBehaviorPayload, UserBehaviorQueue } from '@plasticine-monitor-sdk/types'
+import { UserBehaviorMetricsEnum, UserBehaviorQueue } from '@plasticine-monitor-sdk/types'
 
-export function initPV(userBehaviorQueue: UserBehaviorQueue<UserBehaviorPayload>) {
+export function initPV(userBehaviorQueue: UserBehaviorQueue) {
   const handleLoad = () => {
     userBehaviorQueue.add({
       name: UserBehaviorMetricsEnum.PageView,

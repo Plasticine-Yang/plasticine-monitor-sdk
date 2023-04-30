@@ -22,7 +22,6 @@ export function pluginUserBehavior(options: PluginUserBehaviorOptions = defaultO
   const { maxLengthToReport } = options
 
   let browserKernel: BrowserKernel
-  let userBehaviorQueue: UserBehaviorQueueImpl
   let destroyPV: VoidFunction
 
   /** 当用户行为队列的长度超出配置的最大值时触发上报 */
@@ -35,16 +34,16 @@ export function pluginUserBehavior(options: PluginUserBehaviorOptions = defaultO
 
   const reportUserBehavior = async () => {
     // 仅当有记录用户行为时才上报
-    if (userBehaviorQueue.getLength() > 0) {
+    if (browserKernel.userBehaviorQueue!.getLength() > 0) {
       const userBehaviorEvent: UserBehaviorEvent = {
         eventType: EventTypeEnum.UserBehavior,
-        payload: userBehaviorQueue.getPayload(),
+        payload: browserKernel.userBehaviorQueue!.getPayload(),
       }
 
       await browserKernel.reportEvent(userBehaviorEvent)
 
       // 上报完后清空用户行为队列
-      userBehaviorQueue.clear()
+      browserKernel.userBehaviorQueue!.clear()
     }
   }
 
@@ -65,7 +64,8 @@ export function pluginUserBehavior(options: PluginUserBehaviorOptions = defaultO
     init(kernel) {
       browserKernel = kernel
 
-      userBehaviorQueue = new UserBehaviorQueueImpl(maxLengthToReport, handleReportWhenExceed)
+      // 动态挂载到内核实例上，让其他插件也可以往里面添加用户行为 - 比如遇到 JS Error 时记录一下
+      browserKernel.userBehaviorQueue = new UserBehaviorQueueImpl(maxLengthToReport, handleReportWhenExceed)
 
       // 页面隐藏时上报
       document.addEventListener('visibilitychange', handleReportWhenInvisible)
@@ -73,17 +73,14 @@ export function pluginUserBehavior(options: PluginUserBehaviorOptions = defaultO
       // 页面关闭之前上报
       window.addEventListener('beforeunload', handleReportBeforeUnload)
 
-      // 动态挂载到内核实例上，让其他插件也可以往里面添加用户行为 - 比如遇到 JS Error 时记录一下
-      browserKernel.userBehaviorQueue = userBehaviorQueue
-
       // PV
-      destroyPV = initPV(userBehaviorQueue)
+      destroyPV = initPV(browserKernel.userBehaviorQueue!)
     },
 
     beforeDestroy() {
       destroyPV()
 
-      userBehaviorQueue.clear()
+      browserKernel.userBehaviorQueue!.clear()
       delete browserKernel.userBehaviorQueue
 
       window.removeEventListener('beforeunload', handleReportBeforeUnload)

@@ -8,7 +8,7 @@ import type {
   JSErrorExtra,
   JSErrorPayload,
 } from '@plasticine-monitor-sdk/types'
-import { EventTypeEnum } from '@plasticine-monitor-sdk/types'
+import { EventTypeEnum, UserBehaviorMetricsEnum } from '@plasticine-monitor-sdk/types'
 
 import { transformJSError } from './utils'
 
@@ -43,13 +43,20 @@ export class BrowserKernelImpl extends KernelImpl implements BrowserKernel {
       extra,
     }
 
+    this.logger.success(Object.getOwnPropertyDescriptors(this))
     this.reportEvent({
       eventType: EventTypeEnum.JSError,
       payload: jsErrorPayload,
     })
+
+    // 如果启用了 user-behavior 插件则会动态挂载 userBehaviorQueue 属性记录用户行为
+    ;(this as BrowserKernel).userBehaviorQueue?.add({
+      name: UserBehaviorMetricsEnum.JSError,
+      value: jsErrorPayload,
+    })
   }
 
-  public reportEvent(event: BrowserEvent): void {
+  public async reportEvent(event: BrowserEvent): Promise<void> {
     const resolvedEvent: BaseEvent = {
       environmentInfo: event.environmentInfo ?? this.getEnvironmentInfo(),
       eventType: event.eventType,

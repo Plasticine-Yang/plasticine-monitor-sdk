@@ -1,4 +1,4 @@
-import type { BrowserKernel, BrowserPlugin } from '@plasticine-monitor-sdk/types'
+import { BrowserKernel, BrowserPlugin } from '@plasticine-monitor-sdk/types'
 
 export function pluginJSError(): BrowserPlugin {
   let browserKernel: BrowserKernel | null = null
@@ -16,6 +16,7 @@ export function pluginJSError(): BrowserPlugin {
 
     init(kernel) {
       browserKernel = kernel
+
       window.addEventListener('error', handleError)
       window.addEventListener('unhandledrejection', handleUnhandledRejection)
     },
