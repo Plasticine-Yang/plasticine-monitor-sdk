@@ -41,7 +41,7 @@ export interface SDKOptions {
    *
    * @default 根据浏览器环境决定，优先使用 Fetch API
    */
-  sender?: Sender
+  sender?: Sender | null
 }
 
 /**

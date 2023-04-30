@@ -1,28 +1,25 @@
-import {
+import type {
   BrowserKernel,
   BrowserPlugin,
-  EventTypeEnum,
+  PluginUserBehaviorOptions,
   UserBehaviorEvent,
   UserBehaviorPayload,
 } from '@plasticine-monitor-sdk/types'
+import { EventTypeEnum } from '@plasticine-monitor-sdk/types'
 
-import { initPV } from './page-view'
+import { monitorNetwork } from './network'
+import { monitorPV } from './page-view'
 import { UserBehaviorQueueImpl } from './queue'
+import { DEFAULT_MAX_LENGTH_TO_REPORT, DEFAULT_RECORD_FETCH, DEFAULT_RECORD_XHR } from '../../constants'
 
-interface PluginUserBehaviorOptions {
-  /** 超过最大长度后进行上报 */
-  maxLengthToReport: number
-}
-
-const defaultOptions: PluginUserBehaviorOptions = {
-  maxLengthToReport: 100,
-}
-
-export function pluginUserBehavior(options: PluginUserBehaviorOptions = defaultOptions): BrowserPlugin {
-  const { maxLengthToReport } = options
+export function pluginUserBehavior(options?: PluginUserBehaviorOptions): BrowserPlugin {
+  const resolvedOptions = resolveOptions(options)
+  const { maxLengthToReport, recordFetch, recordXMLHttpRequest } = resolvedOptions
 
   let browserKernel: BrowserKernel
-  let destroyPV: VoidFunction
+
+  let cancelMonitorPV: VoidFunction
+  let cancelMonitorNetwork: VoidFunction
 
   /** 当用户行为队列的长度超出配置的最大值时触发上报 */
   const handleReportWhenExceed = (userBehaviorPayloads: UserBehaviorPayload[]) => {
@@ -74,11 +71,15 @@ export function pluginUserBehavior(options: PluginUserBehaviorOptions = defaultO
       window.addEventListener('beforeunload', handleReportBeforeUnload)
 
       // PV
-      destroyPV = initPV(browserKernel.userBehaviorQueue!)
+      cancelMonitorPV = monitorPV(browserKernel.userBehaviorQueue!)
+
+      // 网络请求
+      cancelMonitorNetwork = monitorNetwork(browserKernel.userBehaviorQueue, { recordFetch, recordXMLHttpRequest })
     },
 
     beforeDestroy() {
-      destroyPV()
+      cancelMonitorNetwork()
+      cancelMonitorPV()
 
       browserKernel.userBehaviorQueue!.clear()
       delete browserKernel.userBehaviorQueue
@@ -86,5 +87,15 @@ export function pluginUserBehavior(options: PluginUserBehaviorOptions = defaultO
       window.removeEventListener('beforeunload', handleReportBeforeUnload)
       document.removeEventListener('visibilitychange', handleReportWhenInvisible)
     },
+  }
+}
+
+function resolveOptions(options?: PluginUserBehaviorOptions): Required<PluginUserBehaviorOptions> {
+  const { maxLengthToReport, recordFetch, recordXMLHttpRequest } = options ?? {}
+
+  return {
+    maxLengthToReport: maxLengthToReport ?? DEFAULT_MAX_LENGTH_TO_REPORT,
+    recordFetch: recordFetch ?? DEFAULT_RECORD_FETCH,
+    recordXMLHttpRequest: recordXMLHttpRequest ?? DEFAULT_RECORD_XHR,
   }
 }

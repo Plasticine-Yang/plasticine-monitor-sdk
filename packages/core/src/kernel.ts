@@ -41,8 +41,14 @@ export abstract class KernelImpl implements Kernel {
       plugin.beforeReport?.(event)
     }
 
-    this.logger.info('上报事件', event)
-    await sender.send(url, event)
+    if (sender !== null) {
+      try {
+        this.logger.info('上报事件', event)
+        await sender.send(url, event)
+      } catch (error) {
+        this.logger.error('上报事件出错', error)
+      }
+    }
   }
 
   /** 销毁实例 */

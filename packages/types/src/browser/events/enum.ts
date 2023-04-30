@@ -28,10 +28,10 @@ export enum UserBehaviorMetricsEnum {
   PageView = 'page-view',
   /** JS 运行时错误 */
   JSError = 'js-error',
+  /** 网络请求 */
+  Network = 'network',
   /** 路由变更 */
   RouteChange = 'route-change',
   /** 点击行为 */
   Click = 'click',
-  /** 网络请求 */
-  NetworkRequest = 'network-request',
 }
