@@ -1,6 +1,5 @@
-import { init } from '@plasticine-monitor-sdk/browser'
+import { init, xhrSender } from '@plasticine-monitor-sdk/browser'
 
 export function setupPlasticineMonitor() {
-  init({ url: '', projectId: '', enableLogger: true })
+  init({ url: '', projectId: '', enableLogger: true, sender: xhrSender })
 }
-

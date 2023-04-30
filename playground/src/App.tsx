@@ -22,6 +22,7 @@ function App() {
       <h1>Vite + React</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
+
         <button
           onClick={() => {
             throw new Error('ops')
@@ -29,6 +30,7 @@ function App() {
         >
           emit error
         </button>
+
         <button
           onClick={() => {
             getBrowserKernel()?.captureError(new Error('手动调用 captureError'))
@@ -36,12 +38,36 @@ function App() {
         >
           手动调用 captureError
         </button>
+
         <button
           onClick={() => {
             getBrowserKernel()?.recordTTI?.()
           }}
         >
           手动标记为 TTI
+        </button>
+
+        <button
+          onClick={() => {
+            const xhr = new XMLHttpRequest()
+
+            xhr.addEventListener('loadend', () => {})
+
+            xhr.open('GET', '/api/todos/1', true)
+            xhr.send()
+          }}
+        >
+          发送 XHR 网络请求
+        </button>
+
+        <button
+          onClick={() => {
+            fetch('/api/todos/1', {
+              method: 'GET',
+            })
+          }}
+        >
+          发送 Fetch 网络请求
         </button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
