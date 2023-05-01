@@ -10,10 +10,12 @@ export const xhrSender: Sender = {
 
         xhr.open('POST', url, true)
         xhr.addEventListener('readystatechange', () => {
-          if (xhr.readyState === PlasticineMonitorXHR.DONE && xhr.status === 200) {
-            resolve({ success: true, message: 'success' })
-          } else {
-            reject(new Error('上报数据时出错'))
+          if (xhr.readyState === PlasticineMonitorXHR.DONE) {
+            if (xhr.status === 200) {
+              resolve({ success: true, message: 'success' })
+            } else {
+              reject(new Error('上报数据时出错'))
+            }
           }
         })
         xhr.send(JSON.stringify(data))
