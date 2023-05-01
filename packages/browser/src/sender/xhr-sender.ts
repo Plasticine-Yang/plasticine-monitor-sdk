@@ -9,6 +9,7 @@ export const xhrSender: Sender = {
         const xhr = new PlasticineMonitorXHR()
 
         xhr.open('POST', url, true)
+        xhr.setRequestHeader('Content-Type', 'application/json')
         xhr.addEventListener('readystatechange', () => {
           if (xhr.readyState === PlasticineMonitorXHR.DONE) {
             if (xhr.status === 200) {

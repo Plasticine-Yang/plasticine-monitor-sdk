@@ -8,6 +8,9 @@ export const fetchSender: Sender = {
       const response = await plasticineMonitorFetch(url, {
         body: JSON.stringify(data),
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
 
       const ok = response.ok
