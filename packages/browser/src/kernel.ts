@@ -43,7 +43,6 @@ export class BrowserKernelImpl extends KernelImpl implements BrowserKernel {
       extra,
     }
 
-    this.logger.success(Object.getOwnPropertyDescriptors(this))
     this.reportEvent({
       eventType: EventTypeEnum.JSError,
       payload: jsErrorPayload,
