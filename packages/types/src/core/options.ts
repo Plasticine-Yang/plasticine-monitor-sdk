@@ -42,6 +42,9 @@ export interface SDKOptions {
    * @default 根据浏览器环境决定，优先使用 Fetch API
    */
   sender?: Sender | null
+
+  /** 用于记录 UV 的用户 id - 不传的话默认会生成一个随机值，并存储在用户浏览器的 localStorage 里 */
+  userId?: string
 }
 
 /**
