@@ -1,25 +1,31 @@
-import type {
+import {
   BrowserKernel,
   BrowserPlugin,
+  EventTypeEnum,
   PluginUserBehaviorOptions,
   UserBehaviorEvent,
   UserBehaviorPayload,
 } from '@plasticine-monitor-sdk/types'
-import { EventTypeEnum } from '@plasticine-monitor-sdk/types'
 
+import {
+  DEFAULT_MAX_LENGTH_TO_REPORT,
+  DEFAULT_RECORD_FETCH,
+  DEFAULT_RECORD_XHR,
+  DEFAULT_REPORT_INTERVAL,
+} from '../../constants'
 import { monitorNetwork } from './network'
 import { monitorPV } from './page-view'
 import { UserBehaviorQueueImpl } from './queue'
-import { DEFAULT_MAX_LENGTH_TO_REPORT, DEFAULT_RECORD_FETCH, DEFAULT_RECORD_XHR } from '../../constants'
 
 export function pluginUserBehavior(options?: PluginUserBehaviorOptions): BrowserPlugin {
   const resolvedOptions = resolveOptions(options)
-  const { maxLengthToReport, recordFetch, recordXMLHttpRequest } = resolvedOptions
+  const { maxLengthToReport, recordFetch, recordXMLHttpRequest, reportIntervalTimeout } = resolvedOptions
 
   let browserKernel: BrowserKernel
 
   let cancelMonitorPV: VoidFunction
   let cancelMonitorNetwork: VoidFunction
+  let reportInterval: number
 
   /** 当用户行为队列的长度超出配置的最大值时触发上报 */
   const handleReportWhenExceed = (userBehaviorPayloads: UserBehaviorPayload[]) => {
@@ -51,10 +57,6 @@ export function pluginUserBehavior(options?: PluginUserBehaviorOptions): Browser
     }
   }
 
-  const handleReportBeforeUnload = () => {
-    reportUserBehavior()
-  }
-
   return {
     name: 'user-behavior',
 
@@ -64,27 +66,34 @@ export function pluginUserBehavior(options?: PluginUserBehaviorOptions): Browser
       // 动态挂载到内核实例上，让其他插件也可以往里面添加用户行为 - 比如遇到 JS Error 时记录一下
       browserKernel.userBehaviorQueue = new UserBehaviorQueueImpl(maxLengthToReport, handleReportWhenExceed)
 
-      // 页面隐藏时上报
+      // 页面不可见时上报
       document.addEventListener('visibilitychange', handleReportWhenInvisible)
-
-      // 页面关闭之前上报
-      window.addEventListener('beforeunload', handleReportBeforeUnload)
 
       // PV
       cancelMonitorPV = monitorPV(browserKernel.userBehaviorQueue!)
 
       // 网络请求
       cancelMonitorNetwork = monitorNetwork(browserKernel.userBehaviorQueue, { recordFetch, recordXMLHttpRequest })
+
+      // 每隔 reportInterval 时间上报一次用户行为事件
+      reportInterval = window.setInterval(() => {
+        reportUserBehavior()
+      }, reportIntervalTimeout)
     },
 
     beforeDestroy() {
+      // 取消定时上报
+      clearInterval(reportInterval)
+
+      // 取消所有用户行为监听器
       cancelMonitorNetwork()
       cancelMonitorPV()
 
+      // 清空用户行为队列
       browserKernel.userBehaviorQueue!.clear()
       delete browserKernel.userBehaviorQueue
 
-      window.removeEventListener('beforeunload', handleReportBeforeUnload)
+      // 取消页面不可见时上报
       document.removeEventListener('visibilitychange', handleReportWhenInvisible)
     },
   }
@@ -97,5 +106,6 @@ function resolveOptions(options?: PluginUserBehaviorOptions): Required<PluginUse
     maxLengthToReport: maxLengthToReport ?? DEFAULT_MAX_LENGTH_TO_REPORT,
     recordFetch: recordFetch ?? DEFAULT_RECORD_FETCH,
     recordXMLHttpRequest: recordXMLHttpRequest ?? DEFAULT_RECORD_XHR,
+    reportIntervalTimeout: DEFAULT_REPORT_INTERVAL,
   }
 }

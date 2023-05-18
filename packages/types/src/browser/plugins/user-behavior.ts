@@ -17,6 +17,13 @@ export interface PluginUserBehaviorOptions {
    * @default true
    */
   recordFetch?: boolean
+
+  /**
+   * 每隔多久上报一次用户行为（只在用户行为队列中有记录时才会上报） - 单位：ms
+   *
+   * @default 3000
+   */
+  reportIntervalTimeout?: number
 }
 
 export type ResolvedPluginUserBehaviorOptions = DeepRequired<PluginUserBehaviorOptions>
