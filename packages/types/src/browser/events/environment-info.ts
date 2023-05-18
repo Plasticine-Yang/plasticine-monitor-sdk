@@ -8,4 +8,5 @@ export interface EnvironmentInfo {
   timestamp: number
   url: string
   userId: string
+  sessionId: string
 }

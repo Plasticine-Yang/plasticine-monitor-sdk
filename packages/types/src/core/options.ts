@@ -45,6 +45,9 @@ export interface SDKOptions {
 
   /** 用于记录 UV 的用户 id - 不传的话默认会生成一个随机值，并存储在用户浏览器的 localStorage 里 */
   userId?: string
+
+  /** 用于记录用户的每次会话 */
+  sessionId?: string
 }
 
 /**

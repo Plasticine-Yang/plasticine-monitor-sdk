@@ -4,7 +4,7 @@ import { BrowserKernelImpl } from './kernel'
 import { createBrowserLogger } from './logger'
 import { defaultPlugins } from './plugins'
 import { fetchSender, xhrSender } from './sender'
-import { generateUserId, supportFetch, supportXHR } from './utils'
+import { generateSessionId, generateUserId, supportFetch, supportXHR } from './utils'
 
 export const init: FnInitBrowserSDK = (browserSDKOptions) => {
   const browserKernelOptions: BrowserKernelOptions = resolveKernelOptions(browserSDKOptions)
@@ -22,7 +22,7 @@ export function getBrowserKernel() {
 }
 
 function resolveKernelOptions(browserSDKOptions: BrowserSDKOptions): BrowserKernelOptions {
-  const { url, projectId, env, release, plugins, sender, enableLogger, userId } = browserSDKOptions
+  const { url, projectId, env, release, plugins, sender, enableLogger, userId, sessionId } = browserSDKOptions
 
   return {
     url,
@@ -34,5 +34,6 @@ function resolveKernelOptions(browserSDKOptions: BrowserSDKOptions): BrowserKern
     enableLogger: enableLogger ?? false,
     createLogger: createBrowserLogger,
     userId: userId ?? generateUserId(),
+    sessionId: sessionId ?? generateSessionId(),
   }
 }

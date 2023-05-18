@@ -22,7 +22,7 @@ export class BrowserKernelImpl extends KernelImpl implements BrowserKernel {
   }
 
   private getEnvironmentInfo(): EnvironmentInfo {
-    const { env, projectId, release, userId } = this.browserKernelOptions
+    const { env, projectId, release, userId, sessionId } = this.browserKernelOptions
     const { href, pathname } = window.location
 
     return {
@@ -33,6 +33,7 @@ export class BrowserKernelImpl extends KernelImpl implements BrowserKernel {
       url: href,
       pagePath: pathname,
       userId,
+      sessionId,
     }
   }
 
