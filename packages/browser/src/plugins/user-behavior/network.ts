@@ -6,7 +6,7 @@ import {
   UserBehaviorQueue,
 } from '@plasticine-monitor-sdk/types'
 
-import { supportFetch, supportXHR } from '../../utils'
+import { generateUUID, supportFetch, supportXHR } from '../../utils'
 
 /**
  * 监听用户行为
@@ -71,6 +71,7 @@ function proxyXMLHttpRequest(userBehaviorQueue: UserBehaviorQueue) {
             this.networkMetrics.response!.status = this.status
             this.networkMetrics.response!.timestamp = endTime
             this.networkMetrics.duration = endTime - this.startTime
+            this.networkMetrics.request!.url = this.responseURL
 
             // response headers
             this.networkMetrics.response!.headers = {}
@@ -90,8 +91,10 @@ function proxyXMLHttpRequest(userBehaviorQueue: UserBehaviorQueue) {
 
             // 记录请求行为
             userBehaviorQueue.add({
+              id: generateUUID(),
               name: UserBehaviorMetricsEnum.Network,
               value: this.networkMetrics as NetworkMetrics,
+              timestamp: Date.now(),
             })
           },
           { once: true },
@@ -106,7 +109,6 @@ function proxyXMLHttpRequest(userBehaviorQueue: UserBehaviorQueue) {
         password?: string | null | undefined,
       ): void {
         this.networkMetrics.request!.method = method as string
-        this.networkMetrics.request!.url = url as string
 
         super.open(method, url, async ?? true, username, password)
       }
@@ -187,6 +189,7 @@ function proxyFetch(userBehaviorQueue: UserBehaviorQueue) {
 
           networkMetrics.response!.headers = headers
           networkMetrics.response!.body = await clonedResponse.text()
+          networkMetrics.request!.url = response.url
 
           return response
         })
@@ -201,7 +204,12 @@ function proxyFetch(userBehaviorQueue: UserBehaviorQueue) {
           networkMetrics.response!.timestamp = endTime
           networkMetrics.duration = endTime - startTime
 
-          userBehaviorQueue.add({ name: UserBehaviorMetricsEnum.Network, value: networkMetrics as NetworkMetrics })
+          userBehaviorQueue.add({
+            id: generateUUID(),
+            name: UserBehaviorMetricsEnum.Network,
+            value: networkMetrics as NetworkMetrics,
+            timestamp: Date.now(),
+          })
         })
     }
   }
