@@ -25,9 +25,9 @@ export function monitorClick(userBehaviorQueue: UserBehaviorQueue) {
     })
   }
 
-  window.addEventListener('click', handleClick)
+  window.addEventListener('click', handleClick, { capture: true })
 
   return function cancelMonitorClick() {
-    window.removeEventListener('click', handleClick)
+    window.removeEventListener('click', handleClick, { capture: true })
   }
 }

@@ -10,7 +10,7 @@ import type {
 } from '@plasticine-monitor-sdk/types'
 import { EventTypeEnum, UserBehaviorMetricsEnum } from '@plasticine-monitor-sdk/types'
 
-import { transformJSError } from './utils'
+import { generateUUID, transformJSError } from './utils'
 
 export class BrowserKernelImpl extends KernelImpl implements BrowserKernel {
   private browserKernelOptions: BrowserKernelOptions
@@ -51,8 +51,10 @@ export class BrowserKernelImpl extends KernelImpl implements BrowserKernel {
 
     // 如果启用了 user-behavior 插件则会动态挂载 userBehaviorQueue 属性记录用户行为
     ;(this as BrowserKernel).userBehaviorQueue?.add({
+      id: generateUUID(),
       name: UserBehaviorMetricsEnum.JSError,
       value: jsErrorPayload,
+      timestamp: Date.now(),
     })
   }
 
