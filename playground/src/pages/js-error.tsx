@@ -1,9 +1,13 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { Space, Divider, Button, Popover } from '@arco-design/web-react'
 import { emitSyntaxError, emitRangeError, emitTypeError, emitURIError } from '@/utils/demos'
 import { getBrowserKernel } from '@plasticine-monitor-sdk/browser'
 
 const JSError: FC = () => {
+  useEffect(() => {
+    getBrowserKernel()?.recordTTI?.()
+  }, [])
+
   return (
     <Space direction="vertical">
       <Divider>触发常见的 JavaScript 运行时异常</Divider>

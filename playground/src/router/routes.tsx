@@ -2,8 +2,7 @@ import { Navigate, RouteObject } from 'react-router-dom'
 
 import Index from '@/pages/index'
 import JSError from '@/pages/js-error'
-import Page1 from '@/pages/page1'
-import Page2 from '@/pages/page2'
+import Network from '@/pages/network'
 
 export const routes: RouteObject[] = [
   {
@@ -19,12 +18,8 @@ export const routes: RouteObject[] = [
         element: <JSError />,
       },
       {
-        path: '/page1',
-        element: <Page1 />,
-      },
-      {
-        path: '/page2',
-        element: <Page2 />,
+        path: '/network',
+        element: <Network />,
       },
     ],
   },

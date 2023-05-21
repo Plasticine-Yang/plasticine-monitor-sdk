@@ -40,14 +40,9 @@ const BasicLayout: FC<PropsWithChildren> = (props) => {
             JavaScript 运行时异常
           </MenuItem>
 
-          <MenuItem key="/page1">
+          <MenuItem key="/network">
             <IconCalendar />
-            Page 1
-          </MenuItem>
-
-          <MenuItem key="/page2">
-            <IconCalendar />
-            Page 2
+            网络请求
           </MenuItem>
         </Menu>
       </Sider>

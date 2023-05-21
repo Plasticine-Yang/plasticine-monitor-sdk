@@ -10,6 +10,7 @@
     "test": "vitest",
     "test:u": "vitest -u",
     "play": "pnpm -C playground dev",
+    "play:build": "pnpm -C playground build",
     "commit": "cz",
     "update-pkgs": "taze -wi",
     "prepare": "husky install"
