@@ -1,6 +1,6 @@
 {
   "name": "@plasticine-monitor-sdk/types",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": "Plasticine-Yang",
   "description": "types of @plasticine-monitor-sdk",
   "type": "module",
