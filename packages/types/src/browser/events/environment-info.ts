@@ -9,4 +9,5 @@ export interface EnvironmentInfo {
   url: string
   userId: string
   sessionId: string
+  userAgent: string
 }

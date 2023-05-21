@@ -6,6 +6,7 @@ export interface NetworkRequest {
   timestamp: number
   headers?: Record<string, string>
   body?: string
+  reason?: string
 }
 
 export interface NetworkResponse {

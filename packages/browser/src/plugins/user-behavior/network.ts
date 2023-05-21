@@ -195,6 +195,7 @@ function proxyFetch(userBehaviorQueue: UserBehaviorQueue) {
         })
         .catch((reason) => {
           networkMetrics.response!.status = -1
+          networkMetrics.request!.reason = String(reason)
 
           return reason
         })

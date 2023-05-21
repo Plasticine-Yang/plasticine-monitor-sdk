@@ -34,6 +34,7 @@ export class BrowserKernelImpl extends KernelImpl implements BrowserKernel {
       pagePath: pathname,
       userId,
       sessionId,
+      userAgent: window.navigator.userAgent,
     }
   }
 
