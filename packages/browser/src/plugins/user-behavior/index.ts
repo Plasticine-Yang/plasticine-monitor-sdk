@@ -16,6 +16,7 @@ import {
 import { monitorNetwork } from './network'
 import { monitorPV } from './page-view'
 import { UserBehaviorQueueImpl } from './queue'
+import { monitorClick } from './click'
 
 export function pluginUserBehavior(options?: PluginUserBehaviorOptions): BrowserPlugin {
   const resolvedOptions = resolveOptions(options)
@@ -24,6 +25,7 @@ export function pluginUserBehavior(options?: PluginUserBehaviorOptions): Browser
   let browserKernel: BrowserKernel
 
   let cancelMonitorPV: VoidFunction
+  let cancelMonitorClick: VoidFunction
   let cancelMonitorNetwork: VoidFunction
   let reportInterval: number
 
@@ -72,8 +74,11 @@ export function pluginUserBehavior(options?: PluginUserBehaviorOptions): Browser
       // PV
       cancelMonitorPV = monitorPV(browserKernel.userBehaviorQueue!)
 
+      // 点击行为
+      cancelMonitorClick = monitorClick(browserKernel.userBehaviorQueue!)
+
       // 网络请求
-      cancelMonitorNetwork = monitorNetwork(browserKernel.userBehaviorQueue, { recordFetch, recordXMLHttpRequest })
+      cancelMonitorNetwork = monitorNetwork(browserKernel.userBehaviorQueue!, { recordFetch, recordXMLHttpRequest })
 
       // 每隔 reportInterval 时间上报一次用户行为事件
       reportInterval = window.setInterval(() => {
@@ -87,6 +92,7 @@ export function pluginUserBehavior(options?: PluginUserBehaviorOptions): Browser
 
       // 取消所有用户行为监听器
       cancelMonitorNetwork()
+      cancelMonitorClick()
       cancelMonitorPV()
 
       // 清空用户行为队列
